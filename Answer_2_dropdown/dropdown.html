@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link href="./dropdown.css" rel="stylesheet" />
+</head>     
+<body>
+
+<h2>Custom Dropdown</h2>
+
+<p>Type to filter:</p>
+<form autocomplete="off">
+  <div class="autocomplete" style="width:300px;">
+    <input id="myInput" type="text" name="myTreat" placeholder="Fav Dish">
+  </div>
+  <input type="submit" value="Search">
+</form>
+
+<script>
+function autocomplete(inp, arr) {
+  var currentFocus;
+  inp.addEventListener("input", function(e) {
+      var a, b, i, val = this.value;
+      closeAllLists();
+      if (!val) { return false;}
+      currentFocus = -1;
+      a = document.createElement("DIV");
+      a.setAttribute("id", this.id + "autocomplete-list");
+      a.setAttribute("class", "autocomplete-items");
+      this.parentNode.appendChild(a);
+      for (i = 0; i < arr.length; i++) {
+        if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
+          b = document.createElement("DIV");
+          b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
+          b.innerHTML += arr[i].substr(val.length);
+          b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
+          b.addEventListener("click", function(e) {
+              inp.value = this.getElementsByTagName("input")[0].value;
+              closeAllLists();
+          });
+          a.appendChild(b);
+        }
+      }
+  });
+
+  inp.addEventListener("keydown", function(e) {
+      var x = document.getElementById(this.id + "autocomplete-list");
+      if (x) x = x.getElementsByTagName("div");
+      if (e.keyCode == 40) {
+        currentFocus++;
+        makeActive(x);
+      } else if (e.keyCode == 38) { 
+        currentFocus--;
+        makeActive(x);
+      } else if (e.keyCode == 13) {
+        e.preventDefault();
+        if (currentFocus > -1) {
+          if (x) x[currentFocus].click();
+        }
+      }
+  });
+  function makeActive(x) {
+    if (!x) return false;
+    removeActive(x);
+    if (currentFocus >= x.length) currentFocus = 0;
+    if (currentFocus < 0) currentFocus = (x.length - 1);
+    x[currentFocus].classList.add("autocomplete-active");
+  }
+  function removeActive(x) {
+    for (var i = 0; i < x.length; i++) {
+      x[i].classList.remove("autocomplete-active");
+    }
+  }
+  function closeAllLists(elmnt) {
+    var x = document.getElementsByClassName("autocomplete-items");
+    for (var i = 0; i < x.length; i++) {
+      if (elmnt != x[i] && elmnt != inp) {
+        x[i].parentNode.removeChild(x[i]);
+      }
+    }
+  }
+  document.addEventListener("click", function (e) {
+      closeAllLists(e.target);
+  });
+}
+
+var countries = ["Artichoke","Arugula","Asparagus","Avocado","BambooShoots","BeanSprouts","Beans-seeBeanList","Beet","BelgianEndive","BellPepper","BitterMelonBitterGourd","BokChoyBokChoiPakChoy","Broccoli","BrusselsSprouts","BurdockRootGobo","Cabbage","Green,Red,Savoy","Calabash","Capers","Carrot","CassavaYuca","Cauliflower","Celery","CeleryRootCeleriac","Celtuce","Chayote","ChineseBroccoliKai-lan","CornMaize","BabyCornCandleCorn","Cucumber","EnglishCucumber","Gherkin","PicklingCucumbers","DaikonRadish","Edamame","EggplantAubergine","ElephantGarlic","Endive","CurlyFrisee","Escarole","Fennel","Fiddlehead","Galangal","Garlic","Ginger","GrapeLeaves","GreenBeansStringBeansSnapBeans","WaxBeans","Greens","AmaranthLeavesChineseSpinach","BeetGreens","CollardGreens","DandelionGreens","Kale","KohlrabiGreens","MustardGreens","Rapini","Spinach","SwissChard","TurnipGreens","HeartsofPalm","Horseradish","JerusalemArtichokeSunchokes","Jícama","Kale","Curly","Lacinato","Ornamental","Kohlrabi","Leeks","Lemongrass","Lettuce","Butterhead-Bibb,Boston","Iceberg","Leaf-GreenLeaf,RedLeaf","Romaine","LotusRoot","LotusSeed","Mushrooms-seeMushroomList","NapaCabbage","Nopales","Okra","Olive","Onion","GreenOnionsScallions","Parsley","ParsleyRoot","Parsnip","Peas","greenpeas","snowpeas","sugarsnappeas","Peppers-seePeppersList","Plantain","Potato","Pumpkin","Purslane","Radicchio","Radish","Rutabaga","SeaVegetables-seeSeaVegetableList","Shallots","Spinach","Squash-seeSquashList","SweetPotato","SwissChard","Taro","Tomatillo","Tomato","Turnip","WaterChestnut","WaterSpinach","Watercress","WinterMelon","Yams","Zucchini"];
+
+autocomplete(document.getElementById("myInput"), countries);
+</script>
+
+</body>
+</html>
